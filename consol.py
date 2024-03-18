@@ -1,19 +1,20 @@
 #!/usr/bin/python3
 '''The implementation of the console (CLI) for the AirBnB project'''
 
-commands = ["quit" , "create" , "update" , "all" , "--help"]
+commands = ["quit", "create", "update", "all", "--help"]
 
 description = {
-    "quit" : "quits the program",
-    "--help" : "lists the vaild commands in consol",
-    "create" : "creates a new user",
-    "update" : "updates a user that has been aready created , if not found nothing happen",
+    "quit": "quits the program",
+    "--help": "lists the vaild commands in consol",
+    "create": "creates a new user",
+    "update": "updates a user that has been aready created"
+    " if not found nothing happen",
     "all": "i dont know yet"
 }
 
 # if __name__ == '__main__':
 while True:
-    print("(hbnb) " , end="")
+    print("(hbnb) ", end="")
     command = input("")
 
     if command == "--help":
