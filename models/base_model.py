@@ -5,6 +5,8 @@
 import uuid
 from datetime import datetime
 
+import engine
+
 
 class BaseModel:
     """
@@ -33,16 +35,20 @@ class BaseModel:
             for key, val in kwargs.items():
                 if key in ["created_at", "updated_at"]:
                     self.__dict__[key] = datetime.strptime(val, frmt)
-                else:
+                elif val != "__class__":
                     self.__dict__[key] = val
         else:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
+            # Saving the new object into storage
+            engine.storage.new(self)
 
     def save(self):
         """Updates `updated_at` with the current datetime"""
         self.updated_at = datetime.now()
+        # hitting the change to be in storage
+        engine.storage.save()
 
     def to_dict(self):
         """
@@ -52,8 +58,8 @@ class BaseModel:
         """
         obj = self.__dict__.copy()
         obj["__class__"] = self.__class__.__name__
-        obj["created_at"] = self.created_at.isoformat()
-        obj["updated_at"] = self.updated_at.isoformat()
+        obj["created_at"] = self.created_at.isoformat().__str__()
+        obj["updated_at"] = self.updated_at.isoformat().__str__()
 
         return obj
 
