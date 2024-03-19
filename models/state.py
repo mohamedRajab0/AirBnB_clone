@@ -11,7 +11,6 @@ class State(BaseModel):
 
     Public class attributes:
         name : string - empty string
-        
     """
 
     name = ""
