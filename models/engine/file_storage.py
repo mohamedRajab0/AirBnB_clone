@@ -20,7 +20,7 @@ class FileStorage:
     def new(self, obj):
         """ sets in __objects the obj with key <obj class name>.id """
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj.to_dict()
+        FileStorage.__objects[key] = obj.to_dict()
 
     def save(self):
         """ serializes __objects to the JSON file (path: __file_path) """
@@ -33,7 +33,7 @@ class FileStorage:
           (only if the JSON file (__file_path) exists ; otherwise, do nothing.
           If the file doesn't exist, no exception should be raised)
           """
-
+    
         try:
             with open(FileStorage.__file_path, 'r') as f:
                 FileStorage.__objects = json.load(f)
