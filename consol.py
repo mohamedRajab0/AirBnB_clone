@@ -35,13 +35,16 @@ class HBNBCommand(cmd.Cmd):
         items = args.split()
         if len(items) < 1:
             print("class name missing")
-        name = items[0]
-        inst_id = items[1]
-        name_id = name + '.' + inst_id
-        with open('file.json' , 'r', encoding='utf-8') as f:
-            my_obj = json.load(f)
-        print(my_obj[name_id])
-        print(len(items))
+        else:
+            name = items[0]
+            inst_id = items[1]
+            name_id = name + '.' + inst_id
+            if name != 'BaseModel':
+                print('class doesn't exist)
+            with open('file.json' , 'r', encoding='utf-8') as f:
+                my_obj = json.load(f)
+            print(my_obj[name_id])
+            print(len(items))
 
 
 
