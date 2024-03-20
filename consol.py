@@ -19,20 +19,30 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """Creates a new instance of BaseModel"""
-        if len(args) < 2:
-            print("class name missing ")
-        if args:
-            args = args.split()
-            for item in args:
-                if item == "BaseModel":
-                    newobj = BaseModel()
-                    with open("file.json", 'w') as f:
-                        json.dump(newobj, f)
-                    print(newobj.id)
-                else:
-                    print("class doesn't exist")
+        items = args.split()
+        print(type(items))
+        if len(args) < 1 :
+            print("class name missing")
+
+        for item in items:
+            if item != 'BaseModel':
+                print("class doesn't exist")
+            else:
+                new_instance = BaseModel()
+                new_instance.save()
+                print(new_instance.__dict__['id'])
     def do_show(self, args):
-        pass
+        items = args.split()
+        if len(items) < 1:
+            print("class name missing")
+        name = items[0]
+        inst_id = items[1]
+        name_id = name + '.' + inst_id
+        with open('file.json' , 'r', encoding='utf-8') as f:
+            my_obj = json.load(f)
+        print(my_obj[name_id])
+        print(len(items))
+
 
 
 
