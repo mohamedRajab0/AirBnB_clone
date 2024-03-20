@@ -1,30 +1,47 @@
-#!/usr/bin/python3
+import cmd
+import json
+
+from models.base_model import  BaseModel
+
 '''The implementation of the console (CLI) for the AirBnB project'''
 
-commands = ["quit", "create", "update", "all", "--help"]
+class HBNBCommand(cmd.Cmd):
+    prompt = "(hbnb) "
 
-description = {
-    "quit": "quits the program",
-    "--help": "lists the vaild commands in consol",
-    "create": "creates a new user",
-    "update": "updates a user that has been aready created"
-    " if not found nothing happen",
-    "all": "i dont know yet"
-}
+    def do_quit(self, arg):
+        """Quit command to exit the program"""
 
-# if __name__ == '__main__':
-while True:
-    print("(hbnb) ", end="")
-    command = input("")
+        return True
 
-    if command == "--help":
-        print("Usage: (command) [OPTION...] [SECTION] PAGE...")
-        for vaild_command in commands:
-            print(f"(command) {vaild_command} : {description[vaild_command]}")
+    def emptyline(self):
+        """return empty line"""
+        return ""
 
-    elif command == "quit":
-        exit()
+    def do_create(self, args):
+        """Creates a new instance of BaseModel"""
+        if len(args) < 2:
+            print("class name missing ")
+        if args:
+            args = args.split()
+            for item in args:
+                if item == "BaseModel":
+                    newobj = BaseModel()
+                    with open("file.json", 'w') as f:
+                        json.dump(newobj, f)
+                    print(newobj.id)
+                else:
+                    print("class doesn't exist")
+    def do_show(self, args):
+        pass
 
-    else:
-        print("Try '--help' for more information")
-        continue
+
+
+
+
+    do_EOF =do_quit
+
+
+
+
+if __name__ == '__main__':
+    HBNBCommand().cmdloop()
