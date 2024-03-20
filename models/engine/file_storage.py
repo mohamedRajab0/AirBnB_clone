@@ -39,3 +39,5 @@ class FileStorage:
                 FileStorage.__objects = json.load(f)
         except FileNotFoundError:
             return
+        except json.JSONDecodeError:
+            return
