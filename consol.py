@@ -92,9 +92,54 @@ class HBNBCommand(cmd.Cmd):
                 print("JSON decoding error occurred")
 
     def do_all(self , args):
+        """ Prints all string representation of all instances based or not on the class name"""
         items = args.split(' ')
-        if len(items) < 1:
+        if len(args) < 1 or items[0] == 'BaseModel':
+            with open('file.json', 'r', encoding='utf-8') as f:
+                my_obj = json.load(f)
+                print(my_obj)
+        else:
             print("** class doesn't exist **")
+    def do_update(self, args):
+        """ Updates an instance based on the class name and id by adding or updating attribute """
+        items = args.split()
+        if len(items) < 1:
+            print("** class name missing **")
+        else:
+
+            if len(items) < 2:
+                print("** instance id missing **")
+                return
+
+            name, inst_id = items[0], items[1]
+            name_id = name + '.' + inst_id
+            if name != 'BaseModel':
+                print("** class doesn't exist **")
+                return
+
+
+
+            try:
+                my_object = storage.all()
+                if name_id not  in my_object:
+                    print("** no instance found ** ")
+                    return
+                if len(items) < 3:
+                    print("** attribute name missing **")
+                    return
+                if len(items) < 4:
+                    print("** value missing **")
+                    return
+                update_not = ['id', 'created_at', 'updated_at']
+                if items[2] not in update_not:
+                    my_object[name_id][items[2]] = items[3]
+                    storage.save()
+            except FileNotFoundError:
+                print("File not found error occurred")
+            except json.JSONDecodeError:
+                print("JSON decoding error occurred")
+
+
 
 
 
