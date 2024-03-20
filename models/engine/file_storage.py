@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 import json
-from models.base_model import BaseModel
 
+from models.base_model import BaseModel
 
 
 class FileStorage:
@@ -10,29 +10,22 @@ class FileStorage:
     __objects = {}
 
     def __init__(self) -> None:
-        # """ to create a unique FileStorage instance for your application """
+        """ to create a unique FileStorage instance for your application """
         pass
-        # __file_path
-        # __objects
 
     def all(self):
         """returns the dictionary __objects"""
-
-        return self.__objects
+        return FileStorage.__objects
 
     def new(self, obj):
         """ sets in __objects the obj with key <obj class name>.id """
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
         self.__objects[key] = obj.to_dict()
 
-
-
     def save(self):
         """ serializes __objects to the JSON file (path: __file_path) """
         with open(self.__file_path, 'w', encoding="utf-8") as f:
-            json.dump(self.__objects, f)
-
-
+            json.dump(FileStorage.__objects, f)
 
     def reload(self):
         """  
@@ -42,7 +35,7 @@ class FileStorage:
           """
 
         try:
-            with open(self.__file_path, 'r') as f:
-                self.__objects = json.load(f)
+            with open(FileStorage.__file_path, 'r') as f:
+                FileStorage.__objects = json.load(f)
         except FileNotFoundError:
-            pass
+            return
