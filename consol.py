@@ -1,13 +1,23 @@
 import cmd
 import json
-
+import sys
 from models import storage
 from models.base_model import BaseModel
-
+from  models.user import User
+from models.review import Review
+from models.state import State
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
 '''The implementation of the console (CLI) for the AirBnB project'''
 
+def str_to_class(classname):
+    return getattr(sys.modules[__name__], classname)
 
 class HBNBCommand(cmd.Cmd):
+
+    my_classes = {'BaseModel': BaseModel(),'User': User(), 'State': State(), 'Review': Review(),
+                    'Place': Place(), 'City': City(), 'Amenity': Amenity()}
     prompt = "(hbnb) "
 
     def do_quit(self, arg):
@@ -21,16 +31,18 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """Creates a new instance of BaseModel"""
+
         items = args.split()
         if len(args) < 1:
             print("** class name missing **")
             return
 
         for item in items:
-            if item != 'BaseModel':
+            if item not in self.my_classes.keys():
                 print("** class doesn't exist **")
             else:
-                new_instance = BaseModel()
+
+                new_instance = self.my_classes[items[0]]
                 new_instance.save()
                 print(new_instance.__dict__['id'])
 
@@ -47,7 +59,7 @@ class HBNBCommand(cmd.Cmd):
 
             name, inst_id = items[0], items[1]
             name_id = name + '.' + inst_id
-            if name != 'BaseModel':
+            if name not in self.my_classes.keys():
                 print("** class doesn't exist **")
                 return
             try:
@@ -75,7 +87,7 @@ class HBNBCommand(cmd.Cmd):
 
             name, inst_id = items[0], items[1]
             name_id = name + '.' + inst_id
-            if name != 'BaseModel':
+            if name not in self.my_classes.keys():
                 print("** class doesn't exist **")
                 return
             try:
@@ -94,7 +106,7 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self , args):
         """ Prints all string representation of all instances based or not on the class name"""
         items = args.split(' ')
-        if len(args) < 1 or items[0] == 'BaseModel':
+        if len(args) < 1 or items[0] not in self.my_classes.keys():
             with open('file.json', 'r', encoding='utf-8') as f:
                 my_obj = json.load(f)
                 print(my_obj)
@@ -113,7 +125,7 @@ class HBNBCommand(cmd.Cmd):
 
             name, inst_id = items[0], items[1]
             name_id = name + '.' + inst_id
-            if name != 'BaseModel':
+            if name not in self.my_classes.keys():
                 print("** class doesn't exist **")
                 return
 
