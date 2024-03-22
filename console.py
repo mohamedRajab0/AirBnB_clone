@@ -40,17 +40,17 @@ class HBNBCommand(cmd.Cmd):
             final_command = f'{command}'
             self.items.append(class_name)
             arguments = ""
+
             for arg in args:
                 arg = self.parse_str(arg.strip())
                 arguments += (arg + ' ')
-            arguments = arguments[:len(arguments)-1]
-            real_args = self.parse_string_to_list(arguments)
-            # print(real_args)
-            for arg in real_args: self.items.append(arg)
 
-            # print(final_command)
-            # print(self.items)
+            arguments = arguments[:len(arguments)-1]
+
+            real_args = self.parse_string_to_list(arguments)
+            for arg in real_args: self.items.append(arg)
             self.splitted = True
+            # print(final_command)
             return final_command
         except:
             return line
@@ -60,7 +60,6 @@ class HBNBCommand(cmd.Cmd):
         matches = re.findall(r'"([^"]+)"|(\d+)', input_string)
         # Flatten the list of tuples and filter out None values
         result = [item for sublist in matches for item in sublist if item]
-        # print("result : ", result)
         return result
 
     def fetch_parts(self, input):
@@ -87,7 +86,6 @@ class HBNBCommand(cmd.Cmd):
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
-
         return True
 
     def emptyline(self):
@@ -98,7 +96,7 @@ class HBNBCommand(cmd.Cmd):
         """Creates a new instance of BaseModel"""
         if not self.splitted:
             self.items = args.split()
-        if len(args) < 1:
+        if len(self.items) < 1:
             print("** class name missing **")
             return
 
@@ -130,10 +128,9 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
                 return
             try:
-                with open('file.json', 'r', encoding='utf-8') as f:
-                    my_obj = json.load(f)
+                my_obj = storage.all()
                 if name_id in my_obj:
-                    print(my_obj[name_id])
+                    print(my_obj[name_id].__str__())
                 else:
                     print("** no instance found ** ")
             except FileNotFoundError:
@@ -141,8 +138,8 @@ class HBNBCommand(cmd.Cmd):
             except json.JSONDecodeError:
                 print("JSON decoding error occurred")
 
-    def do_destory(self, args):
-        """destory objects with an id and class name"""
+    def do_destroy(self, args):
+        """destroy objects with an id and class name"""
         if not self.splitted:
             self.items = args.split()
         if len(self.items) < 1:
@@ -229,7 +226,6 @@ class HBNBCommand(cmd.Cmd):
                 print("JSON decoding error occurred")
 
     def do_count(self, args):
-        self.items = args.split()
         if self.items[0] not in self.my_classes.keys():
             print("** class doesn't exist **")
             return
