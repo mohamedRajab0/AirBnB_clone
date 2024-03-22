@@ -39,7 +39,7 @@ class BaseModel:
                 elif val != "__class__":
                     self.__dict__[key] = val
         else:
-            self.id = str(uuid.uuid4()) # 120981-iojsdff12-121
+            self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             models.storage.new(self)
@@ -47,7 +47,8 @@ class BaseModel:
     def save(self):
         """Updates `updated_at` with the current datetime"""
         self.updated_at = datetime.now()
-        # Saving the new object into storage with potentially new attr or updated attr
+        # Saving the new object into storage
+        # with potentially new attr or updated attr
         models.storage.save()
 
     def to_dict(self):

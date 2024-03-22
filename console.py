@@ -16,8 +16,9 @@ from models.user import User
 
 class HBNBCommand(cmd.Cmd):
 
-    my_classes = {'BaseModel': BaseModel, 'User': User, 'State': State, 'Review': Review,
-                  'Place': Place, 'City': City, 'Amenity': Amenity}
+    my_classes = {'BaseModel': BaseModel, 'User': User, 'State': State,
+                  'Review': Review, 'Place': Place, 'City': City,
+                  'Amenity': Amenity}
     prompt = "(hbnb) "
 
     splitted = False
@@ -48,15 +49,18 @@ class HBNBCommand(cmd.Cmd):
             arguments = arguments[:len(arguments)-1]
 
             real_args = self.parse_string_to_list(arguments)
-            for arg in real_args: self.items.append(arg)
+
             self.splitted = True
-            # print(final_command)
+
+            for arg in real_args:
+                self.items.append(arg)
+
             return final_command
-        except:
+        except Exception:
             return line
 
     def parse_string_to_list(self, input_string):
-        # Use regular expression to find all matches of quoted strings and numbers
+        # Use regular expression to find all matches of quoted strings, numbers
         matches = re.findall(r'"([^"]+)"|(\d+)', input_string)
         # Flatten the list of tuples and filter out None values
         result = [item for sublist in matches for item in sublist if item]
@@ -169,14 +173,18 @@ class HBNBCommand(cmd.Cmd):
                 print("JSON decoding error occurred")
 
     def do_all(self, args):
-        """ Prints all string representation of all instances based or not on the class name"""
+        """
+        Prints all string representation
+        of all instances based or not on the class name
+        """
         if not self.splitted:
             self.items = args.split()
         objects = []
         # print(len(items)) # => 0,1   class => not found
         if len(self.items) <= 1 or self.items[0] in self.my_classes.keys():
             for instance in storage.all().values():
-                if len(self.items) != 0 and instance.__class__.__name__ == self.items[0]:
+                if (len(self.items) != 0 and
+                        instance.__class__.__name__ == self.items[0]):
                     objects.append(instance.__str__())
                 elif len(self.items) == 0:
                     objects.append(instance.__str__())
@@ -185,7 +193,10 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
     def do_update(self, args):
-        """ Updates an instance based on the class name and id by adding or updating attribute """
+        """
+        Updates an instance based on the class
+        name and id by adding or updating attribute
+        """
         if not self.splitted:
             self.items = args.split()
         if len(self.items) < 1:
@@ -213,12 +224,11 @@ class HBNBCommand(cmd.Cmd):
                 if len(self.items) < 4:
                     print("** value missing **")
                     return
-                # <atrr> value <attr> value
-                #         0                 1                       2    3      4          5
-                # update User f7a9c035-8d67-4867-ab57-cf77277411c3 name ypuss my_number 219191
+
                 for i in range(2, len(self.items) - 1, 2):
                     setattr(my_object[name_id],
                             self.items[i],  self.items[i+1])
+
                 storage.save()
             except FileNotFoundError:
                 print("File not found error occurred")

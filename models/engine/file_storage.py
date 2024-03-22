@@ -30,7 +30,6 @@ class FileStorage:
         with open(self.__file_path, 'w', encoding="utf-8") as f:
             json.dump(dict_objs, f)
 
-
     def reload(self):
         """
           deserializes the JSON file to __objects
@@ -41,7 +40,6 @@ class FileStorage:
         try:
             with open(FileStorage.__file_path, 'r') as f:
                 dict_objs = json.load(f)
-
 
             from models.amenity import Amenity
             from models.base_model import BaseModel

@@ -38,18 +38,21 @@ Once you have started the command interpreter, you can use the following command
 
 - `create`: Create a new AirBnB object (e.g., User, State, City, Place).
   Example:
+
   ```bash
   (hbnb) create User
   ```
 
 - `show`: Retrieve information about a specific object by specifying its class name and ID.
   Example:
+
   ```bash
   (hbnb) show User 1234-5678-9012
   ```
 
 - `all`: List all objects of a given class or list all objects if no class is specified.
   Example:
+
   ```bash
   (hbnb) all
   (hbnb) all State
@@ -57,18 +60,21 @@ Once you have started the command interpreter, you can use the following command
 
 - `update`: Update attributes of an object by specifying its class name, ID, attribute name, and attribute value.
   Example:
+
   ```bash
   (hbnb) update User 1234-5678-9012 first_name "John"
   ```
 
 - `destroy`: Delete an object by specifying its class name and ID.
   Example:
+
   ```bash
   (hbnb) destroy Place 9876-5432-1098
   ```
 
 - `quit` or `EOF`: Exit the command interpreter.
   Example:
+
   ```bash
   (hbnb) quit
   ```
@@ -85,21 +91,25 @@ Once you have started the command interpreter, you can use the following command
 Here are some examples of how to use the AirBnB Clone command interpreter:
 
 1. Creating a new User object:
+
    ```bash
    (hbnb) create User
    ```
 
 2. Listing all City objects:
+
    ```bash
    (hbnb) all City
    ```
 
 3. Updating the name attribute of a Place object:
+
    ```bash
    (hbnb) update Place 1234-5678-9012 name "Cozy Cabin"
    ```
 
 4. Deleting a State object:
+
    ```bash
    (hbnb) destroy State 9876-5432-1098
    ```
