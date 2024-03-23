@@ -36,7 +36,7 @@ class BaseModel:
             for key, val in kwargs.items():
                 if key in ["created_at", "updated_at"]:
                     self.__dict__[key] = datetime.strptime(val, frmt)
-                elif val != "__class__":
+                elif key != "__class__":
                     self.__dict__[key] = val
         else:
             self.id = str(uuid.uuid4())
