@@ -138,10 +138,9 @@ class HBNBCommand(cmd.Cmd):
                     print(my_obj[name_id].__str__())
                 else:
                     print("** no instance found ** ")
-            except FileNotFoundError:
-                print("File not found error occurred")
-            except json.JSONDecodeError:
-                print("JSON decoding error occurred")
+                    return
+            except Exception:
+                return
 
     def do_destroy(self, args):
         """destroy objects with an id and class name"""
