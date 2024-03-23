@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+'''The implementation of the console (CLI) for the AirBnB project'''
+
 import cmd
 import json
 import re
@@ -11,8 +13,6 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-
-'''The implementation of the console (CLI) for the AirBnB project'''
 
 
 class HBNBCommand(cmd.Cmd):
