@@ -243,7 +243,8 @@ class HBNBCommand(cmd.Cmd):
         print(obj_conuting)
 
     def do_quit(self, arg):
-        '''Quit command to exit the program'''
+        '''Quit command to exit the program
+        '''
         return True
 
     def emptyline(self):
@@ -251,7 +252,8 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_EOF(self, str_args):
-        '''This command exits the program, same as `quit`'''
+        '''This command exits the program, same as `quit`
+        '''
 
         return True
 
