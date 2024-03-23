@@ -58,7 +58,7 @@ class Testreview(unittest.TestCase):
 
     def test_to_dict_creates_dict(self):
         """test to_dict method creates a dictionary with proper attrs"""
-        u = review()
+        u = Review()
         new_d = u.to_dict()
         self.assertEqual(type(new_d), dict)
         self.assertFalse("_sa_instance_state" in new_d)
@@ -70,7 +70,7 @@ class Testreview(unittest.TestCase):
     def test_to_dict_values(self):
         """test that values in dict returned from to_dict are correct"""
         t_format = "%Y-%m-%dT%H:%M:%S.%f"
-        u = review()
+        u = Review()
         new_d = u.to_dict()
         self.assertEqual(new_d["__class__"], "review")
         self.assertEqual(type(new_d["created_at"]), str)
@@ -80,8 +80,8 @@ class Testreview(unittest.TestCase):
 
     def test_str(self):
         """test that the str method has the correct output"""
-        review = review()
-        string = "[review] ({}) {}".format(review.id, review.__dict__)
+        review = Review()
+        string = "[Review] ({}) {}".format(review.id, review.__dict__)
         self.assertEqual(string, str(review))
 
     if __name__ == "__main__":

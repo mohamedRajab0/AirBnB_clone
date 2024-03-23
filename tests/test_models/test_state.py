@@ -15,7 +15,7 @@ class Teststate(unittest.TestCase):
             """
                 tests that the state class Inherits from BaseModel
             """
-            new_state = state()
+            new_state = State()
             self.assertIsInstance(new_state, BaseModel())
 
     def test_state_attrributes(self):
@@ -23,7 +23,7 @@ class Teststate(unittest.TestCase):
             tests that the state attributes exists
         """
 
-        new_state = state()
+        new_state = State()
         self.assertTrue("name" in new_state.__dir__())
       
 
@@ -31,13 +31,13 @@ class Teststate(unittest.TestCase):
             """
                 Test the type of name
             """
-            new = state()
+            new = State()
             name = getattr(new, "name")
             self.assertIsInstance(name, str)
 
     def test_to_dict_creates_dict(self):
         """test to_dict method creates a dictionary with proper attrs"""
-        u = state()
+        u = State()
         new_d = u.to_dict()
         self.assertEqual(type(new_d), dict)
         self.assertFalse("_sa_instance_state" in new_d)
@@ -49,7 +49,7 @@ class Teststate(unittest.TestCase):
     def test_to_dict_values(self):
         """test that values in dict returned from to_dict are correct"""
         t_format = "%Y-%m-%dT%H:%M:%S.%f"
-        u = state()
+        u = State()
         new_d = u.to_dict()
         self.assertEqual(new_d["__class__"], "state")
         self.assertEqual(type(new_d["created_at"]), str)
@@ -59,8 +59,8 @@ class Teststate(unittest.TestCase):
 
     def test_str(self):
         """test that the str method has the correct output"""
-        state = state()
-        string = "[state] ({}) {}".format(state.id, state.__dict__)
+        state = State()
+        string = "[State] ({}) {}".format(state.id, state.__dict__)
         self.assertEqual(string, str(state))
 
     if __name__ == "__main__":
