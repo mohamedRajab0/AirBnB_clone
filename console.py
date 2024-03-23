@@ -89,7 +89,8 @@ class HBNBCommand(cmd.Cmd):
         return new_str
 
     def do_quit(self, arg):
-        """Quit command to exit the program"""
+        '''This command exits the program, same as `EOF`'''
+
         return True
 
     def emptyline(self):
@@ -235,6 +236,11 @@ class HBNBCommand(cmd.Cmd):
                 print("JSON decoding error occurred")
 
     def do_count(self, args):
+        """
+        Retrieve the number of instances of a class
+
+        Executed by typing: (hbnb) <class name>.count()
+        """
         if self.items[0] not in self.my_classes.keys():
             print("** class doesn't exist **")
             return
