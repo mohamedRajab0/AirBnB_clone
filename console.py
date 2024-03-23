@@ -122,15 +122,16 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
 
-            if len(self.items) < 2:
-                print("** instance id missing **")
-                return
-
-            name, inst_id = self.items[0], self.items[1]
-            name_id = name + '.' + inst_id
+            name = self.items[0]
             if name not in self.my_classes.keys():
                 print("** class doesn't exist **")
                 return
+
+            if len(self.items) < 2:
+                print("** instance id missing **")
+                return
+            inst_id = self.items[1]
+            name_id = name + '.' + inst_id
             try:
                 my_obj = storage.all()
                 if name_id in my_obj:
@@ -150,15 +151,15 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
 
-            if len(self.items) < 2:
-                print("** instance id missing **")
-                return
-
-            name, inst_id = self.items[0], self.items[1]
-            name_id = name + '.' + inst_id
+            name = self.items[0]
             if name not in self.my_classes.keys():
                 print("** class doesn't exist **")
                 return
+            if len(self.items) < 2:
+                print("** instance id missing **")
+                return
+            inst_id = self.items[1]
+            name_id = name + '.' + inst_id
             try:
                 my_obj = storage.all()
                 if name_id in my_obj:
@@ -202,17 +203,16 @@ class HBNBCommand(cmd.Cmd):
         if len(self.items) < 1:
             print("** class name missing **")
         else:
-
+            name = self.items[0]
+            if name not in self.my_classes.keys():
+                print("** class doesn't exist **")
+                return
             if len(self.items) < 2:
                 print("** instance id missing **")
                 return
 
-            name, inst_id = self.items[0], self.items[1]
+            inst_id = self.items[1]
             name_id = name + '.' + inst_id
-            if name not in self.my_classes.keys():
-                print("** class doesn't exist **")
-                return
-
             try:
                 my_object = storage.all()
                 if name_id not in my_object:
