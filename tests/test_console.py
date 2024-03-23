@@ -9,19 +9,15 @@ Test Classes:
     TestDestroyCommand
 """
 
-import unittest
 import sys
+import unittest
 from io import StringIO
 from unittest.mock import patch
+
 from console import HBNBCommand
-from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
 from models.user import User
-from models.state import State
-from models.city import City
-from models.place import Place
-from models.amenity import Amenity
-from models.review import Review
 
 
 class TestOrdinaryCommands(unittest.TestCase):
