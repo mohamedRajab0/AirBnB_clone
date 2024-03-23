@@ -88,15 +88,6 @@ class HBNBCommand(cmd.Cmd):
             new_str += f"{i}"
         return new_str
 
-    def do_quit(self, arg):
-        '''This command exits the program, same as `EOF`'''
-
-        return True
-
-    def emptyline(self):
-        """return empty line"""
-        return ""
-
     def do_create(self, args):
         """Creates a new instance of BaseModel"""
         if not self.splitted:
@@ -250,7 +241,19 @@ class HBNBCommand(cmd.Cmd):
                 obj_conuting += 1
         print(obj_conuting)
 
-    do_EOF = do_quit
+    def do_quit(self, arg):
+        '''This command exits the program, same as `EOF`'''
+
+        return True
+
+    def emptyline(self):
+        """Pass when an empty line is entered"""
+        pass
+
+    def do_EOF(self, str_args):
+        '''This command exits the program, same as `quit`'''
+
+        return True
 
 
 if __name__ == '__main__':
