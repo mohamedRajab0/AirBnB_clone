@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import cmd
 import json
 import re
@@ -242,8 +243,7 @@ class HBNBCommand(cmd.Cmd):
         print(obj_conuting)
 
     def do_quit(self, arg):
-        '''This command exits the program, same as `EOF`'''
-
+        '''Quit command to exit the program'''
         return True
 
     def emptyline(self):
