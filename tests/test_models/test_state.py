@@ -24,10 +24,8 @@ class Teststate(unittest.TestCase):
         """
 
         new_state = state()
-        self.assertTrue("email" in new_state.__dir__())
-        self.assertTrue("first_name" in new_state.__dir__())
-        self.assertTrue("last_name" in new_state.__dir__())
-        self.assertTrue("password" in new_state.__dir__())
+        self.assertTrue("name" in new_state.__dir__())
+      
 
     def test_type_name(self):
             """
