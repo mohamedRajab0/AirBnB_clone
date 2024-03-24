@@ -17,7 +17,7 @@ from models.user import User
 
 class HBNBCommand(cmd.Cmd):
     '''Command Line Interpreter for the AirBnB project'''
-    
+
     my_classes = {'BaseModel': BaseModel, 'User': User, 'State': State,
                   'Review': Review, 'Place': Place, 'City': City,
                   'Amenity': Amenity}
@@ -62,13 +62,14 @@ class HBNBCommand(cmd.Cmd):
             return line
 
     def parse_string_to_list(self, input_string):
-        # Use regular expression to find all matches of quoted strings, numbers
+        """divide args and put it into a list"""
+
         matches = re.findall(r'"([^"]+)"|(\d+)', input_string)
-        # Flatten the list of tuples and filter out None values
         result = [item for sublist in matches for item in sublist if item]
         return result
 
     def fetch_parts(self, input):
+        """ divide between the parentheses"""
         match = re.match(r'(\w+\.\w+)\((.*)\)', input)
         if not match:
             raise ValueError("Invalid function call format")
@@ -79,6 +80,7 @@ class HBNBCommand(cmd.Cmd):
         return function_name, arguments
 
     def parse_str(self, mystr):
+        """ make string vaild to function"""
         my_dict = {"{": 1, "}": 2,
                    ")": 3, "(": 4, ",": 5, ":": 6}
         new_str = ""
