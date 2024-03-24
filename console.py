@@ -60,7 +60,6 @@ class HBNBCommand(cmd.Cmd):
         except Exception:
             return line
 
-    @staticmethod
     def parse_string_to_list(self, input_string):
         # Use regular expression to find all matches of quoted strings, numbers
         matches = re.findall(r'"([^"]+)"|(\d+)', input_string)
@@ -68,7 +67,6 @@ class HBNBCommand(cmd.Cmd):
         result = [item for sublist in matches for item in sublist if item]
         return result
 
-    @staticmethod
     def fetch_parts(self, input):
         match = re.match(r'(\w+\.\w+)\((.*)\)', input)
         if not match:
@@ -79,7 +77,6 @@ class HBNBCommand(cmd.Cmd):
 
         return function_name, arguments
 
-    @staticmethod
     def parse_str(self, mystr):
         my_dict = {"{": 1, "}": 2,
                    ")": 3, "(": 4, ",": 5, ":": 6}
