@@ -94,6 +94,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """Creates a new instance of BaseModel"""
+
         if not self.splitted:
             self.items = args.split()
         if len(self.items) < 1:
