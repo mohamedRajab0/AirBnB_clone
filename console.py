@@ -70,6 +70,7 @@ class HBNBCommand(cmd.Cmd):
 
     def fetch_parts(self, input):
         """ divide between the parentheses"""
+    
         match = re.match(r'(\w+\.\w+)\((.*)\)', input)
         if not match:
             raise ValueError("Invalid function call format")
@@ -81,6 +82,7 @@ class HBNBCommand(cmd.Cmd):
 
     def parse_str(self, mystr):
         """ make string vaild to function"""
+
         my_dict = {"{": 1, "}": 2,
                    ")": 3, "(": 4, ",": 5, ":": 6}
         new_str = ""
