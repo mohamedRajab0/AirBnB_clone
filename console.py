@@ -221,8 +221,13 @@ class HBNBCommand(cmd.Cmd):
                     return
 
                 for i in range(2, len(self.items) - 1, 2):
-                    setattr(my_object[name_id],
+                    if self.items[i+1].isnumeric():
+                        setattr(my_object[name_id],
+                            self.items[i],  eval(self.items[i+1]))
+                    else:
+                        setattr(my_object[name_id],
                             self.items[i],  self.items[i+1])
+                    
 
                 storage.save()
             except FileNotFoundError:
