@@ -169,14 +169,11 @@ class HBNBCommand(cmd.Cmd):
                 print("JSON decoding error occurred")
 
     def do_all(self, args):
-        """
-        Prints all string representation
-        of all instances based or not on the class name
-        """
+        """Prints all string representation"""
+
         if not self.splitted:
             self.items = args.split()
         objects = []
-        # print(len(items)) # => 0,1   class => not found
         if len(self.items) <= 1 or self.items[0] in self.my_classes.keys():
             for instance in storage.all().values():
                 if (len(self.items) != 0 and
@@ -189,10 +186,8 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
 
     def do_update(self, args):
-        """
-        Updates an instance based on the class
-        name and id by adding or updating attribute
-        """
+        """Updates an instance based on the class"""
+
         if not self.splitted:
             self.items = args.split()
         if len(self.items) < 1:
