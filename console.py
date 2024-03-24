@@ -4,7 +4,6 @@
 import cmd
 import json
 import re
-
 from models import storage
 from models.amenity import Amenity
 from models.base_model import BaseModel
@@ -22,7 +21,6 @@ class HBNBCommand(cmd.Cmd):
                   'Review': Review, 'Place': Place, 'City': City,
                   'Amenity': Amenity}
     prompt = "(hbnb) "
-
     splitted = False
 
     items = []
@@ -37,22 +35,23 @@ class HBNBCommand(cmd.Cmd):
         if check[0] in self.supported_commands:
             return line
         try:
-            function_name, args = fetch_parts(line)
+            function_name, args = HBNBCommand.fetch_parts(line)
             class_name, command = function_name.split('.')
             args = args.split(',', 1)
             final_command = f'{command}'
             self.items.append(class_name)
             arguments = ""
             for arg in args:
-                arg = parse_str(arg.strip())
+                arg = HBNBCommand.parse_str(arg.strip())
                 arguments += (arg + ' ')
             arguments = arguments[:len(arguments)-1]
-            real_args = parse_string_to_list(arguments)
+            real_args = HBNBCommand.parse_string_to_list(arguments)
             self.splitted = True
             for arg in real_args:
                 self.items.append(arg)
             return final_command
-        except Exception:
+        except Exception as e:
+            print(e)
             return line
 
     @staticmethod
@@ -73,7 +72,6 @@ class HBNBCommand(cmd.Cmd):
 
         function_name = match.group(1)
         arguments = match.group(2)
-
         return function_name, arguments
 
     @staticmethod
@@ -118,7 +116,6 @@ class HBNBCommand(cmd.Cmd):
         if len(self.items) < 1:
             print("** class name missing **")
         else:
-
             name = self.items[0]
             if name not in self.my_classes.keys():
                 print("** class doesn't exist **")
