@@ -16,7 +16,8 @@ from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
-
+    '''Command Line Interpreter for the AirBnB project'''
+    
     my_classes = {'BaseModel': BaseModel, 'User': User, 'State': State,
                   'Review': Review, 'Place': Place, 'City': City,
                   'Amenity': Amenity}
