@@ -1,403 +1,253 @@
 #!/usr/bin/python3
 '''The implementation of the console (CLI) for the AirBnB project'''
+
 import cmd
+import json
 import re
-import sys
+
 from models import storage
+from models.amenity import Amenity
 from models.base_model import BaseModel
-from models.user import User
-from models.state import State
 from models.city import City
 from models.place import Place
-from models.amenity import Amenity
 from models.review import Review
+from models.state import State
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
     '''Command Line Interpreter for the AirBnB project'''
 
-    prompt = '(hbnb) '
-    classes = {
-            'BaseModel': BaseModel,
-            'User': User,
-            'State': State,
-            'City': City,
-            'Place': Place,
-            'Amenity': Amenity,
-            'Review': Review
-            }
+    my_classes = {'BaseModel': BaseModel, 'User': User, 'State': State,
+                  'Review': Review, 'Place': Place, 'City': City,
+                  'Amenity': Amenity}
+    prompt = "(hbnb) "
 
-    @staticmethod
-    def splitter(str_args):
-        '''
-        Customized split method to handle double-quoted arguments with spaces
+    splitted = False
 
-        Ex: update User 3587-2190-7659 "name" "Robert Downey Jr"
-        '''
+    items = []
+    supported_commands = ['quit', 'create', 'show', 'destory', 'all', 'update']
 
-        arguments = re.findall(r'([^\'"\s]+|"[^"]*"|\'[^\']*\')', str_args)
+    def precmd(self, line: str) -> str:
+        """Preprocess the command line"""
 
-        if len(arguments) > 2:
-            if arguments[2][0] == '{' and arguments[-1][-1] == '}':
-                arguments[2] = ''.join(arguments[2:])
-                del arguments[3:]
-                if arguments[1][0] == '"' and arguments[1][-1] == '"':
-                    arguments[1] = arguments[1].strip('"')
-                elif arguments[1][0] == '\'' and arguments[1][-1] == '\'':
-                    arguments[1] = arguments[1].strip('\'')
-
-                return arguments
-        if len(arguments) > 3:
-            copy_attr = arguments[3]
-
-        # Clean up the  quotes
-        for i in range(len(arguments)):
-            if arguments[i][0] == '"' and arguments[i][-1] == '"':
-                arguments[i] = arguments[i].strip('"')
-            elif arguments[i][0] == '\'' and arguments[i][-1] == '\'':
-                arguments[i] = arguments[i].strip('\'')
-
-        if len(arguments) > 3:
-            arguments[3] = copy_attr
-
-        return arguments
-
-    @staticmethod
-    def parse_all(line):
-        '''Parse commands such as: <model>.all()'''
-
-        cls = line.split('.')[0]
-
-        return f'all {cls}'
-
-    @staticmethod
-    def parse_count(line):
-        '''Parse commands such as: <model>.count()'''
-
-        cls = line.split('.')[0]
-
-        return f'count {cls}'
-
-    @staticmethod
-    def parse_show_destroy(line):
-        '''
-        Parse commands like: <model>.show("66-79") or <model>.destroy("68-46")
-        '''
-
-        line = line.strip()
-        line = line[:-1]
-        line = line.replace('.', ' ', 1).replace('(', ' ', 1).replace(',', '')
-        splitted = line.split()
-
-        splitted.extend(['', '', ''])
-        command, cls, inst_id = splitted[1], splitted[0], splitted[2]
-
-        new_line = f'{command} {cls} {inst_id}'
-
-        return new_line
-
-    @staticmethod
-    def parse_update(line):
-        """Parse commands like: User.update(1723-5609, "name", "Robert Jr")"""
-
-        update_p = r'^ *(?P<cls>\w+)?.update\('
-        update_p += r'(?P<id>[\w\'"][^,]*)?'
-        update_p += r'(, *(?P<name>[\w\'"]*[^,]*))?'
-        update_p += r'(, *(?P<value>[\w\'"]*[^,]*))?'
-        update_p += r'(, *.+)*\) *$'
-
-        match = re.search(update_p, line)
-
-        if match:
-            class_name = match.group('cls')
-            if not class_name:
-                class_name = ''
-            _id = match.group('id')
-            if not _id:
-                _id = ''
-            attr_name = match.group('name')
-            if not attr_name:
-                attr_name = ''
-            attr_value = match.group('value')
-            if not attr_value:
-                attr_value = ''
-
-            new_line = f"update {class_name} {_id} {attr_name} {attr_value}"
-            return new_line
-
-    @staticmethod
-    def parse_update_2(line):
-        """
-        Parse commands like:
-        (hbnb) User.update("6693-5721", {"first_name":  "John", "age": 89})
-        """
-
-        update_p2 = r'^ *(?P<cls>\w+)?.update\('
-        update_p2 += r'(?P<id>[\w\'"][^,]*)'
-        update_p2 += r'(, *(?P<dict>{.*}))'
-        update_p2 += r'(, *.+)*\) *$'
-
-        match = re.search(update_p2, line)
-
-        if match:
-            class_name = match.group('cls')
-            if not class_name:
-                class_name = ''
-            _id = match.group('id')
-            if not _id:
-                _id = ''
-            obj_dict = match.group('dict')
-            if not obj_dict:
-                obj_dict = ''
-
-            new_line = f"update {class_name} {_id} {obj_dict}"
-            return new_line
-
-    def precmd(self, line):
-        '''Preprocess the command line'''
-
-        if not sys.stdin.isatty():
-            print()
-
-        update_p = r'^ *(?P<cls>\w+)?.update\('
-        update_p += r'(?P<id>[\w\'"][^,]*)?'
-        update_p += r'(, *(?P<name>[\w\'"]*[^,]*))?'
-        update_p += r'(, *(?P<value>[\w\'"]*))?'
-        update_p += r'(, *.+)*\) *$'
-
-        update_p2 = r'^ *(?P<cls>\w+)?.update\('
-        update_p2 += r'(?P<id>[\w\'"][^,]*)'
-        update_p2 += r'(, *(?P<dict>{.*}))'
-        update_p2 += r'(, *.+)*\) *$'
-
-        cmds_formers = {r'^ *\w*.all\(\) *$': self.parse_all,
-                        r'^ *\w*.count\(\) *$': self.parse_count,
-                        r'^ *\w*.show\(.*\) *$': self.parse_show_destroy,
-                        r'^ *\w*.destroy\(.*\) *$': self.parse_show_destroy,
-                        update_p2: self.parse_update_2,
-                        update_p: self.parse_update}
-
-        for pattern in cmds_formers:
-            if re.search(pattern, line):
-                return cmds_formers[pattern](line)
-        else:
+        self.splitted = False
+        self.items = []
+        check = line.split()
+        if check[0] in self.supported_commands:
+            return line
+        try:
+            function_name, args = self.fetch_parts(line)
+            class_name, command = function_name.split('.')
+            args = args.split(',', 1)
+            final_command = f'{command}'
+            self.items.append(class_name)
+            arguments = ""
+            for arg in args:
+                arg = self.parse_str(arg.strip())
+                arguments += (arg + ' ')
+            arguments = arguments[:len(arguments)-1]
+            real_args = self.parse_string_to_list(arguments)
+            self.splitted = True
+            for arg in real_args:
+                self.items.append(arg)
+            return final_command
+        except Exception:
             return line
 
-    def do_create(self, str_args):
-        '''
-        Creates a new instance of a class, saves it (to the JSON file)
-        and prints the id.
+    def parse_string_to_list(self, input_string):
+        """divide args and put it into a list"""
 
-        Ex: (hbnb) create BaseModel
-        '''
+        matches = re.findall(r'"([^"]+)"|(\d+)', input_string)
+        result = [item for sublist in matches for item in sublist if item]
+        return result
 
-        args = self.splitter(str_args)
+    def fetch_parts(self, input):
+        """ divide between the parentheses"""
 
-        if len(args) == 0:
-            print('** class name missing **')
-            return
-        elif args[0] not in self.classes:
-            print('** class doesn\'t exist **')
-            return
+        match = re.match(r'(\w+\.\w+)\((.*)\)', input)
+        if not match:
+            raise ValueError("Invalid function call format")
 
-        cls = self.classes[args[0]]
-        obj = cls()
-        obj.save()
-        print(obj.id)
+        function_name = match.group(1)
+        arguments = match.group(2)
 
-    def complete_create(self, text, line, begidx, endix):
-        '''Provides Tab-completion for create command'''
+        return function_name, arguments
 
-        return [cls for cls in self.classes if cls.startswith(text)]
+    def parse_str(self, mystr):
+        """ make string vaild to function"""
 
-    def do_show(self, str_args):
-        '''
-        Prints the string representation of an instance
-        based on the class name and id
+        my_dict = {"{": 1, "}": 2,
+                   ")": 3, "(": 4, ",": 5, ":": 6}
+        new_str = ""
+        for i in mystr:
+            if i in my_dict.keys():
+                continue
+            if i == '\'':
+                i = '"'
+            new_str += f"{i}"
+        return new_str
 
-        Ex: (hbnb) show User 1234-1234-1234
-        '''
+    def do_create(self, args):
+        """Creates a new instance of BaseModel"""
 
-        args = self.splitter(str_args)
-
-        if len(args) < 1:
-            print('** class name missing **')
-            return
-        elif args[0] not in self.classes:
-            print('** class doesn\'t exist **')
-            return
-        elif len(args) < 2:
-            print('** instance id missing **')
-            return
-
-        cls, inst_id = args[0], args[1]
-        inst_key = f'{cls}.{inst_id}'
-
-        for key, obj in storage.all().items():
-            if key == inst_key:
-                print(obj)
-                return
-        else:
-            print('** no instance found **')
-
-    def complete_show(self, text, line, begidx, endix):
-        '''Provides Tab-completion for show command'''
-
-        return [cls + ' ' for cls in self.classes if cls.startswith(text)]
-
-    def do_destroy(self, str_args):
-        '''
-        Deletes an instance based on the class name and id,
-        and saves the change into the JSON file
-
-        Ex: (hbnb) destroy BaseModel 1234-1234-1234
-        '''
-
-        args = self.splitter(str_args)
-
-        if len(args) < 1:
-            print('** class name missing **')
-            return
-        elif args[0] not in self.classes:
-            print('** class doesn\'t exist **')
-            return
-        elif len(args) < 2:
-            print('** instance id missing **')
-            return
-
-        cls, inst_id = args[0], args[1]
-        inst_key = f'{cls}.{inst_id}'
-        objs_dict = storage.all()
-
-        for key, obj in objs_dict.items():
-            if key == inst_key:
-                del objs_dict[key]
-                storage.save()
-                return
-        else:
-            print('** no instance found **')
-
-    def complete_destroy(self, text, line, begidx, endix):
-        '''Provides Tab-completion for destroy command'''
-
-        return [cls + ' ' for cls in self.classes if cls.startswith(text)]
-
-    def do_all(self, str_args):
-        """
-        Display string representations of all instances of a given class.
-        If no class is specified, displays all instantiated objects.
-
-        Ex: (hbnb) all Amenity
-        """
-
-        args = self.splitter(str_args)
-
-        if len(args) > 0 and args[0] not in self.classes:
-            print("** class doesn't exist **")
-        else:
-            objects = []
-            for obj in storage.all().values():
-                if len(args) != 0 and args[0] == obj.__class__.__name__:
-                    objects.append(obj.__str__())
-                elif len(args) == 0:
-                    objects.append(obj.__str__())
-            print(objects)
-
-    def complete_all(self, text, line, begidx, endix):
-        '''Provides Tab-completion for all command'''
-
-        return [cls for cls in self.classes if cls.startswith(text)]
-
-    def do_update(self, str_args):
-        """
-        Update a class instance of a given id by adding or updating
-        a given attribute key/value pair or dictionary.
-
-        Ex: (hbnb) update User 49faff9a-6318-451f-87b6-9105 first_name "Betty"
-        """
-        args = self.splitter(str_args)
-        objects = storage.all()
-
-        if len(args) == 0:
+        if not self.splitted:
+            self.items = args.split()
+        if len(self.items) < 1:
             print("** class name missing **")
             return
 
-        if args[0] not in self.classes:
-            print("** class doesn't exist **")
-            return
-
-        if len(args) == 1:
-            print("** instance id missing **")
-            return
-
-        if f"{args[0]}.{args[1]}" not in objects.keys():
-            print("** no instance found **")
-            return
-
-        if len(args) == 2:
-            print("** attribute name missing **")
-            return
-
-        if len(args) == 3:
-            try:
-                type(eval(args[2])) != dict
-            except NameError:
-                print("** value missing **")
-                return
-
-            obj = objects[f"{args[0]}.{args[1]}"]
-            dict_attrs = eval(args[2])
-
-            for key, val in dict_attrs.items():
-                setattr(obj, key, val)
-
-        if len(args) == 4:
-            obj = objects[f"{args[0]}.{args[1]}"]
-
-            if args[2] in obj.__class__.__dict__.keys():
-                value_type = type(obj.__class__.__dict__[args[2]])
-                obj.__dict__[args[2]] = value_type(args[3])
+        for item in self.items:
+            if item not in self.my_classes.keys():
+                print("** class doesn't exist **")
             else:
-                obj.__dict__[args[2]] = eval(args[3])
 
-        storage.save()
+                new_instance = self.my_classes[self.items[0]]
+                obj = new_instance()
+                obj.save()
+                print(obj.id)
 
-    def complete_update(self, text, line, begidx, endix):
-        '''Provides Tab-completion for update command'''
+    def do_show(self, args):
+        """show objects with an id and class name"""
 
-        return [cls + ' ' for cls in self.classes if cls.startswith(text)]
-
-    def do_count(self, str_args):
-        """
-        Retrieve the number of instances of a class
-
-        Executed by typing: (hbnb) <class name>.count()
-        """
-        args = self.splitter(str_args)
-        objects_dict = storage.all()
-        counting = 0
-
-        if len(args) == 0:
+        if not self.splitted:
+            self.items = args.split()
+        if len(self.items) < 1:
             print("** class name missing **")
+        else:
+
+            name = self.items[0]
+            if name not in self.my_classes.keys():
+                print("** class doesn't exist **")
+                return
+
+            if len(self.items) < 2:
+                print("** instance id missing **")
+                return
+            inst_id = self.items[1]
+            name_id = name + '.' + inst_id
+            try:
+                my_obj = storage.all()
+                if name_id in my_obj:
+                    print(my_obj[name_id].__str__())
+                else:
+                    print("** no instance found ** ")
+                    return
+            except Exception:
+                return
+
+    def do_destroy(self, args):
+        """destroy objects with an id and class name"""
+
+        if not self.splitted:
+            self.items = args.split()
+        if len(self.items) < 1:
+            print("** class name missing **")
+        else:
+
+            name = self.items[0]
+            if name not in self.my_classes.keys():
+                print("** class doesn't exist **")
+                return
+            if len(self.items) < 2:
+                print("** instance id missing **")
+                return
+            inst_id = self.items[1]
+            name_id = name + '.' + inst_id
+            try:
+                my_obj = storage.all()
+                if name_id in my_obj:
+                    del my_obj[name_id]
+                    storage.save()
+                    return
+
+                print("** no instance found **")
+            except FileNotFoundError:
+                print("File not found error occurred")
+            except json.JSONDecodeError:
+                print("JSON decoding error occurred")
+
+    def do_all(self, args):
+        """Prints all string representation"""
+
+        if not self.splitted:
+            self.items = args.split()
+        objects = []
+        if len(self.items) <= 1 or self.items[0] in self.my_classes.keys():
+            for instance in storage.all().values():
+                if (len(self.items) != 0 and
+                        instance.__class__.__name__ == self.items[0]):
+                    objects.append(instance.__str__())
+                elif len(self.items) == 0:
+                    objects.append(instance.__str__())
+            print(objects)
+        else:
+            print("** class doesn't exist **")
+
+    def do_update(self, args):
+        """Updates an instance based on the class"""
+
+        if not self.splitted:
+            self.items = args.split()
+        if len(self.items) < 1:
+            print("** class name missing **")
+        else:
+            name = self.items[0]
+            if name not in self.my_classes.keys():
+                print("** class doesn't exist **")
+                return
+            if len(self.items) < 2:
+                print("** instance id missing **")
+                return
+
+            inst_id = self.items[1]
+            name_id = name + '.' + inst_id
+            try:
+                my_object = storage.all()
+                if name_id not in my_object:
+                    print("** no instance found ** ")
+                    return
+                if len(self.items) < 3:
+                    print("** attribute name missing **")
+                    return
+                if len(self.items) < 4:
+                    print("** value missing **")
+                    return
+
+                for i in range(2, len(self.items) - 1, 2):
+                    if self.items[i+1].isnumeric():
+                        setattr(my_object[name_id],
+                                self.items[i],  eval(self.items[i+1]))
+                    else:
+                        setattr(my_object[name_id],
+                                self.items[i],  self.items[i+1])
+                storage.save()
+            except FileNotFoundError:
+                print("File not found error occurred")
+            except json.JSONDecodeError:
+                print("JSON decoding error occurred")
+
+    def do_count(self, args):
+        """Retrieve the number of instances of a class"""
+
+        if self.items[0] not in self.my_classes.keys():
+            print("** class doesn't exist **")
             return
+        obj_conuting = 0
+        for instance in storage.all().values():
+            if instance.__class__.__name__ == self.items[0]:
+                obj_conuting += 1
+        print(obj_conuting)
 
-        cls_name = args[0]
-
-        for key, obj in objects_dict.items():
-            if cls_name == key.split('.')[0]:
-                counting += 1
-
-        print(counting)
-
-    def emptyline(self):
-        '''Pass when an empty line is entered'''
-
-        pass
-
-    def do_quit(self, str_args):
-        '''This command exits the program, same as `EOF`'''
+    def do_quit(self, arg):
+        '''Quit command to exit the program'''
 
         return True
+
+    def emptyline(self):
+        """Pass when an empty line is entered"""
+
+        pass
 
     def do_EOF(self, str_args):
         '''This command exits the program, same as `quit`'''
