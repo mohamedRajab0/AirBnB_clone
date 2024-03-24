@@ -234,11 +234,8 @@ class HBNBCommand(cmd.Cmd):
                 print("JSON decoding error occurred")
 
     def do_count(self, args):
-        """
-        Retrieve the number of instances of a class
+        """Retrieve the number of instances of a class"""
 
-        Executed by typing: (hbnb) <class name>.count()
-        """
         if self.items[0] not in self.my_classes.keys():
             print("** class doesn't exist **")
             return
