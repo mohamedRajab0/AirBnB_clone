@@ -70,7 +70,7 @@ class HBNBCommand(cmd.Cmd):
 
     def fetch_parts(self, input):
         """ divide between the parentheses"""
-    
+
         match = re.match(r'(\w+\.\w+)\((.*)\)', input)
         if not match:
             raise ValueError("Invalid function call format")
