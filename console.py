@@ -112,6 +112,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, args):
         """show objects with an id and class name"""
+
         if not self.splitted:
             self.items = args.split()
         if len(self.items) < 1:
@@ -140,6 +141,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, args):
         """destroy objects with an id and class name"""
+
         if not self.splitted:
             self.items = args.split()
         if len(self.items) < 1:
