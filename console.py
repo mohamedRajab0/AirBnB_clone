@@ -37,17 +37,17 @@ class HBNBCommand(cmd.Cmd):
         if check[0] in self.supported_commands:
             return line
         try:
-            function_name, args = self.fetch_parts(line)
+            function_name, args = fetch_parts(line)
             class_name, command = function_name.split('.')
             args = args.split(',', 1)
             final_command = f'{command}'
             self.items.append(class_name)
             arguments = ""
             for arg in args:
-                arg = self.parse_str(arg.strip())
+                arg = parse_str(arg.strip())
                 arguments += (arg + ' ')
             arguments = arguments[:len(arguments)-1]
-            real_args = self.parse_string_to_list(arguments)
+            real_args = parse_string_to_list(arguments)
             self.splitted = True
             for arg in real_args:
                 self.items.append(arg)
@@ -55,14 +55,16 @@ class HBNBCommand(cmd.Cmd):
         except Exception:
             return line
 
-    def parse_string_to_list(self, input_string):
+    @staticmethod
+    def parse_string_to_list(input_string):
         """divide args and put it into a list"""
 
         matches = re.findall(r'"([^"]+)"|(\d+)', input_string)
         result = [item for sublist in matches for item in sublist if item]
         return result
 
-    def fetch_parts(self, input):
+    @staticmethod
+    def fetch_parts(input):
         """ divide between the parentheses"""
 
         match = re.match(r'(\w+\.\w+)\((.*)\)', input)
@@ -74,7 +76,8 @@ class HBNBCommand(cmd.Cmd):
 
         return function_name, arguments
 
-    def parse_str(self, mystr):
+    @staticmethod
+    def parse_str(mystr):
         """ make string vaild to function"""
 
         my_dict = {"{": 1, "}": 2,
