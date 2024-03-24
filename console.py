@@ -258,8 +258,7 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_EOF(self, str_args):
-        '''This command exits the program, same as `quit`
-        '''
+        '''This command exits the program, same as `quit`'''
 
         return True
 
