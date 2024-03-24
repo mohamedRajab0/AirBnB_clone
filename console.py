@@ -29,13 +29,13 @@ class HBNBCommand(cmd.Cmd):
     supported_commands = ['quit', 'create', 'show', 'destory', 'all', 'update']
 
     def precmd(self, line: str) -> str:
+        """Preprocess the command line"""
+
         self.splitted = False
         self.items = []
         check = line.split()
-
         if check[0] in self.supported_commands:
             return line
-
         try:
             function_name, args = self.fetch_parts(line)
             class_name, command = function_name.split('.')
@@ -43,20 +43,14 @@ class HBNBCommand(cmd.Cmd):
             final_command = f'{command}'
             self.items.append(class_name)
             arguments = ""
-
             for arg in args:
                 arg = self.parse_str(arg.strip())
                 arguments += (arg + ' ')
-
             arguments = arguments[:len(arguments)-1]
-
             real_args = self.parse_string_to_list(arguments)
-
             self.splitted = True
-
             for arg in real_args:
                 self.items.append(arg)
-
             return final_command
         except Exception:
             return line
