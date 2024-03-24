@@ -255,6 +255,7 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         """Pass when an empty line is entered"""
+
         pass
 
     def do_EOF(self, str_args):
