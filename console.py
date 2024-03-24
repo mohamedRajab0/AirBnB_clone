@@ -102,7 +102,6 @@ class HBNBCommand(cmd.Cmd):
             if item not in self.my_classes.keys():
                 print("** class doesn't exist **")
             else:
-
                 new_instance = self.my_classes[self.items[0]]
                 obj = new_instance()
                 obj.save()
@@ -144,7 +143,6 @@ class HBNBCommand(cmd.Cmd):
         if len(self.items) < 1:
             print("** class name missing **")
         else:
-
             name = self.items[0]
             if name not in self.my_classes.keys():
                 print("** class doesn't exist **")
@@ -160,7 +158,6 @@ class HBNBCommand(cmd.Cmd):
                     del my_obj[name_id]
                     storage.save()
                     return
-
                 print("** no instance found **")
             except FileNotFoundError:
                 print("File not found error occurred")
@@ -199,7 +196,6 @@ class HBNBCommand(cmd.Cmd):
             if len(self.items) < 2:
                 print("** instance id missing **")
                 return
-
             inst_id = self.items[1]
             name_id = name + '.' + inst_id
             try:
@@ -213,7 +209,6 @@ class HBNBCommand(cmd.Cmd):
                 if len(self.items) < 4:
                     print("** value missing **")
                     return
-
                 for i in range(2, len(self.items) - 1, 2):
                     if self.items[i+1].isnumeric():
                         setattr(my_object[name_id],
