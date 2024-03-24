@@ -249,8 +249,8 @@ class HBNBCommand(cmd.Cmd):
         print(obj_conuting)
 
     def do_quit(self, arg):
-        '''Quit command to exit the program
-        '''
+        '''Quit command to exit the program'''
+
         return True
 
     def emptyline(self):
